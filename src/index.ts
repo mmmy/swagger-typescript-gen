@@ -5,8 +5,17 @@ interface CodeGenOptions {
 }
 
 export const getTypescriptCode = function (opts: CodeGenOptions) {
-  if (opts.swagger.swagger !== '2.0') {
+  const { swagger } = opts
+  if (swagger.swagger !== '2.0') {
     throw Error('Only Swagger 2.0 specs are supported')
   }
-  return true
+
+  const paths = swagger.paths || {}
+  const definitions = swagger.definitions || []
+
+  const tagModules = []
+  const tags = []
+  Object.getOwnPropertyNames(swagger.paths).forEach(pathName => {
+    const pathData = paths[pathName]
+  })
 }

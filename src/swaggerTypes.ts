@@ -97,10 +97,10 @@ export interface Swagger {
   };
   readonly host: string;
   readonly basePath: string;
-  readonly paths: {
+  readonly paths?: {
     [path: string]: {
       [key in HttpMethod]: HttpOperation
     }
   };
-  readonly definitions: { [key: string]: SwaggerDefinition };
+  readonly definitions?: { [key: string]: SwaggerDefinition };
 }
