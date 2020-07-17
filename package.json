@@ -37,5 +37,8 @@
     "lint-staged": "^10.2.9",
     "ts-jest": "^26.1.0",
     "typescript": "^3.9.5"
+  },
+  "dependencies": {
+    "mustache": "^4.0.1"
   }
 }

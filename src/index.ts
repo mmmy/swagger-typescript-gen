@@ -1,8 +1,10 @@
-import { Swagger } from './swaggerTypes'
+import { Swagger, HttpMethod } from './swaggerTypes'
 
 interface CodeGenOptions {
   swagger: Swagger
 }
+
+const DEFAULT_TAG = 'noTag'
 
 export const getTypescriptCode = function (opts: CodeGenOptions) {
   const { swagger } = opts
@@ -15,7 +17,15 @@ export const getTypescriptCode = function (opts: CodeGenOptions) {
 
   const tagModules = []
   const tags = []
+
   Object.getOwnPropertyNames(swagger.paths).forEach(pathName => {
     const pathData = paths[pathName]
+    const methods = Object.getOwnPropertyNames(pathData) as [HttpMethod]
+    methods.forEach(mKey => {
+      const methodData = pathData[mKey]
+      const { tags } = methodData
+      let tag = tags[0] || DEFAULT_TAG
+      tag = tag.trim()
+    })
   })
 }
