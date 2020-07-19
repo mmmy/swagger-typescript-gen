@@ -1,6 +1,12 @@
-node_modules
-dist
-tsconfig.tsbuildinfo
-coverage
-yarn.lock
+.idea/
+node_modules/
+*.iml
+wks.*
+.DS_Store
+*.swp
+
+tmp-*
+
+lib/
+coverage/
 yarn-error.log

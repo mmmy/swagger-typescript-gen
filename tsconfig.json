@@ -1,34 +1,20 @@
 {
-  "compilerOptions": {
-    "target": "es2015",
-    // "lib": [
-    //   "es2017",
-    //   "es2015"
-    // ],
-    "composite": true,
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "declarationMap": true,
-    "inlineSourceMap": true,
-    "inlineSources": false,
-    "declaration": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "preserveWatchOutput": true,
-    "rootDir": "./src",
-    "outDir": "dist",
-    "noEmitOnError": true,
-    "types": [
-      "jest"
-    ]
-  },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    // "jest",
-    // "**/*.test.ts"
-  ]
+    "compilerOptions": {
+        "target": "es2015",
+        "lib": ["es2017", "es2015"],
+        "composite": true,
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "declarationMap": true,
+        "inlineSourceMap": true,
+        "inlineSources": false,
+        "declaration": true,
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "preserveWatchOutput": true,
+        "rootDir": "./src",
+        "outDir": "lib"
+    },
+    "include": ["src/**/*.ts"]
 }
