@@ -1,0 +1,361 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "This is a sample APIs",
+    "version" : "1.0.0",
+    "title" : "Sample APIs",
+    "contact" : {
+      "email" : "you@your-company.com"
+    },
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host" : "virtserver.swaggerhub.com",
+  "basePath" : "/mmmy/all-types/1.0.0",
+  "tags" : [ {
+    "name" : "json_response",
+    "description" : "返回数据为json格式"
+  }, {
+    "name" : "param_in_path",
+    "description" : "参数在路径中"
+  }, {
+    "name" : "form_data",
+    "description" : "表单数据"
+  }, {
+    "name" : "text_plain",
+    "description" : "纯文本"
+  } ],
+  "schemes" : [ "https" ],
+  "paths" : {
+    "/response_is_json" : {
+      "get" : {
+        "tags" : [ "json_response" ],
+        "summary" : "get方式, 返回json数组",
+        "description" : "返回json数据类型的示例, 参数含有数组类型\n",
+        "operationId" : "searchInventory",
+        "produces" : [ "application/json", "text/plain; charset=utf-8" ],
+        "parameters" : [ {
+          "name" : "searchString",
+          "in" : "query",
+          "description" : "这是个可选的string类型",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "skip",
+          "in" : "query",
+          "description" : "这个是必须选的int类型, 最小是0",
+          "required" : true,
+          "type" : "integer",
+          "minimum" : 0,
+          "format" : "int32"
+        }, {
+          "name" : "filter",
+          "in" : "query",
+          "description" : "可选的string数组类型",
+          "required" : false,
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "enum" : [ "type_1", "type_2", "type_3" ]
+          },
+          "collectionFormat" : "multi"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200 成功返回的json数据",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/InventoryItem"
+              }
+            }
+          },
+          "400" : {
+            "description" : "bad input parameter"
+          },
+          "default" : {
+            "description" : "返回已知错误",
+            "schema" : {
+              "$ref" : "#/definitions/inline_response_default"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "json_response" ],
+        "summary" : "post方式, 返回json对象",
+        "description" : "Adds an item to the system",
+        "operationId" : "addInventory",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "inventoryItem",
+          "description" : "Inventory item to add",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/InventoryItem"
+          }
+        } ],
+        "responses" : {
+          "201" : {
+            "description" : "item created"
+          },
+          "400" : {
+            "description" : "invalid input, object invalid"
+          },
+          "409" : {
+            "description" : "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/user/{id}" : {
+      "get" : {
+        "tags" : [ "param_in_path" ],
+        "summary" : "返回用户信息",
+        "operationId" : "getUserInfo",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "success",
+            "schema" : {
+              "$ref" : "#/definitions/inline_response_200"
+            }
+          }
+        }
+      }
+    },
+    "/user/{id}/{order_id}" : {
+      "delete" : {
+        "tags" : [ "param_in_path" ],
+        "summary" : "删除订单",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "order_id",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "success",
+            "schema" : {
+              "$ref" : "#/definitions/inline_response_200_1"
+            }
+          }
+        }
+      }
+    },
+    "/{folder_id}/upload_file" : {
+      "post" : {
+        "tags" : [ "form_data", "param_in_path" ],
+        "summary" : "上传文件",
+        "consumes" : [ "multipart/form-data" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "folder_id",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "name",
+          "in" : "formData",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "file",
+          "in" : "formData",
+          "required" : false,
+          "type" : "file"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "success",
+            "schema" : {
+              "$ref" : "#/definitions/inline_response_200_2"
+            }
+          }
+        }
+      }
+    },
+    "/user" : {
+      "put" : {
+        "tags" : [ "form_data" ],
+        "summary" : "put form_data",
+        "consumes" : [ "application/x-www-form-urlencoded" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "formData",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "gender",
+          "in" : "formData",
+          "required" : true,
+          "type" : "number",
+          "enum" : [ 0.0, 1.0 ]
+        }, {
+          "name" : "description",
+          "in" : "formData",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "success"
+          }
+        }
+      }
+    },
+    "/text_plain" : {
+      "post" : {
+        "tags" : [ "text_plain" ],
+        "summary" : "纯文本 post, 比如含有sql的json数据, base64编码之后",
+        "consumes" : [ "text/plain" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "type" : "string",
+            "properties" : {
+              "id" : {
+                "type" : "string"
+              },
+              "sql" : {
+                "type" : "string"
+              }
+            }
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "success"
+          }
+        }
+      }
+    }
+  },
+  "definitions" : {
+    "InventoryItem" : {
+      "type" : "object",
+      "required" : [ "id", "manufacturer", "name", "releaseDate" ],
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "format" : "uuid",
+          "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        },
+        "name" : {
+          "type" : "string",
+          "example" : "Widget Adapter",
+          "description" : "名字"
+        },
+        "releaseDate" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "2016-08-29T09:12:33.001Z",
+          "description" : "发行日期"
+        },
+        "manufacturer" : {
+          "$ref" : "#/definitions/Manufacturer"
+        }
+      },
+      "description" : "这是 InvertoryItem的描述"
+    },
+    "Manufacturer" : {
+      "required" : [ "name" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "example" : "ACME Corporation"
+        },
+        "homePage" : {
+          "type" : "string",
+          "format" : "url",
+          "example" : "https://www.acme-corp.com"
+        },
+        "phone" : {
+          "type" : "string",
+          "example" : "408-867-5309"
+        }
+      }
+    },
+    "inline_response_default" : {
+      "type" : "object",
+      "properties" : {
+        "msg" : {
+          "type" : "string"
+        },
+        "result" : {
+          "type" : "boolean"
+        }
+      }
+    },
+    "inline_response_200" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string",
+          "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        },
+        "name" : {
+          "type" : "string",
+          "example" : "Kelly"
+        },
+        "type" : {
+          "type" : "string",
+          "enum" : [ "type_a", "type_b", "type_c" ]
+        },
+        "goods" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string",
+            "example" : "fui"
+          }
+        }
+      }
+    },
+    "inline_response_200_1" : {
+      "type" : "object",
+      "properties" : {
+        "result" : {
+          "type" : "boolean"
+        },
+        "msg" : {
+          "type" : "string"
+        }
+      }
+    },
+    "inline_response_200_2" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "message" : {
+          "type" : "string"
+        }
+      }
+    }
+  }
+}
