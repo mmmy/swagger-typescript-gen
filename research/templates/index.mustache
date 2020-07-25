@@ -1,0 +1,17 @@
+/**
+ * 注意: 此文件是自动生成的, 请勿手动修改, 请配置eslint, tslint等校验去掉
+ */
+
+import request from '@/utils/request'
+
+{{#methods}}
+/** {{summary}} */
+{{^isGET}}
+export async function {{methodName}}(data: {{#parameters.0.tsType.target}}{{moduleName}}.{{parameters.0.tsType.target}}{{/parameters.0.tsType.target}}{{^parameters.0.tsType.target}}undefined{{/parameters.0.tsType.target}})
+: Promise<{{#successfulResponseType}}{{moduleName}}.{{successfulResponseType}}{{/successfulResponseType}}{{^successfulResponseType}}any{{/successfulResponseType}}>
+{
+  return request.{{methodLowerCase}}('{{path}}', { data })
+}
+{{/isGET}}
+
+{{/methods}}

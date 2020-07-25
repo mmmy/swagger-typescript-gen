@@ -25,6 +25,7 @@ export interface Method {
   readonly className: string;
   readonly version: string;
   readonly method: string;
+  readonly methodLowerCase: string;
   readonly isGET: boolean;
   readonly isPOST: boolean;
   readonly isDeprecated: boolean;
@@ -73,6 +74,7 @@ export function makeMethod(
     version: getVersion(path),
     intVersion: getIntVersion(path),
     method: httpVerb.toUpperCase(),
+    methodLowerCase: httpVerb.toLowerCase(),
     isGET: httpVerb.toUpperCase() === "GET",
     isPOST: httpVerb.toUpperCase() === "POST",
     isDeprecated: op.deprecated,

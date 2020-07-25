@@ -34,6 +34,7 @@ export function makeSwaggerType(
 export function makeEmptyTypeSpec(): TypeSpec {
   return {
     name: undefined,
+    hasDescription: false,
     description: undefined,
     isEnum: false,
     isArray: false,

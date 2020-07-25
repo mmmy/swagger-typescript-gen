@@ -1,0 +1,11 @@
+/**
+ * 注意: 此文件是自动生成的, 请勿手动修改, 请配置eslint, tslint等校验去掉
+ */
+
+declare namespace {{&moduleName}} {
+  {{#definitions}}
+  {{#description}}/** {{&description}} */{{/description}}
+  export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}}
+
+  {{/definitions}}
+}

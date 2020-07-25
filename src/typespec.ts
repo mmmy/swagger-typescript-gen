@@ -5,6 +5,7 @@ type TsType = "string" | "number" | "boolean" | "ref";
 export interface TypeSpec {
   readonly name: string | undefined;
   readonly description: string | undefined;
+  readonly hasDescription: boolean;
   readonly isEnum: boolean;
   readonly isArray: boolean;
   readonly isObject: boolean;
@@ -24,6 +25,7 @@ export function makeTypeSpecFromSwaggerType(
 ): Readonly<TypeSpec> {
   return {
     name: undefined,
+    hasDescription: !!swaggerType.description,
     description: swaggerType.description,
     isEnum: false,
     isArray: false,

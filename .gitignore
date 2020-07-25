@@ -10,3 +10,6 @@ tmp-*
 lib/
 coverage/
 yarn-error.log
+bigdata.json
+debug.json
+research/src/*

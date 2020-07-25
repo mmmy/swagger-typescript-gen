@@ -12,8 +12,6 @@
       "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
   },
-  "host" : "virtserver.swaggerhub.com",
-  "basePath" : "/mmmy/all-types/1.0.0",
   "tags" : [ {
     "name" : "json_response",
     "description" : "返回数据为json格式"
@@ -27,40 +25,36 @@
     "name" : "text_plain",
     "description" : "纯文本"
   } ],
-  "schemes" : [ "https" ],
   "paths" : {
-    "/response_is_json" : {
+    "/api/data_service/response_is_json" : {
       "get" : {
         "tags" : [ "json_response" ],
         "summary" : "get方式, 返回json数组",
         "description" : "返回json数据类型的示例, 参数含有数组类型\n",
-        "operationId" : "searchInventory",
         "produces" : [ "application/json", "text/plain; charset=utf-8" ],
         "parameters" : [ {
-          "name" : "searchString",
           "in" : "query",
+          "name" : "searchString",
           "description" : "这是个可选的string类型",
           "required" : false,
           "type" : "string"
         }, {
+          "in" : "query",
           "name" : "skip",
-          "in" : "query",
-          "description" : "这个是必须选的int类型, 最小是0",
           "required" : true,
+          "description" : "这个是必须选的int类型, 最小是0",
           "type" : "integer",
-          "minimum" : 0,
-          "format" : "int32"
+          "format" : "int32",
+          "minimum" : 0
         }, {
-          "name" : "filter",
           "in" : "query",
+          "name" : "filter",
           "description" : "可选的string数组类型",
-          "required" : false,
           "type" : "array",
           "items" : {
             "type" : "string",
             "enum" : [ "type_1", "type_2", "type_3" ]
-          },
-          "collectionFormat" : "multi"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -78,7 +72,15 @@
           "default" : {
             "description" : "返回已知错误",
             "schema" : {
-              "$ref" : "#/definitions/inline_response_default"
+              "type" : "object",
+              "properties" : {
+                "msg" : {
+                  "type" : "string"
+                },
+                "result" : {
+                  "type" : "boolean"
+                }
+              }
             }
           }
         }
@@ -87,14 +89,12 @@
         "tags" : [ "json_response" ],
         "summary" : "post方式, 返回json对象",
         "description" : "Adds an item to the system",
-        "operationId" : "addInventory",
         "consumes" : [ "application/json" ],
         "produces" : [ "application/json" ],
         "parameters" : [ {
           "in" : "body",
           "name" : "inventoryItem",
           "description" : "Inventory item to add",
-          "required" : false,
           "schema" : {
             "$ref" : "#/definitions/InventoryItem"
           }
@@ -116,7 +116,6 @@
       "get" : {
         "tags" : [ "param_in_path" ],
         "summary" : "返回用户信息",
-        "operationId" : "getUserInfo",
         "produces" : [ "application/json", "application/xml" ],
         "parameters" : [ {
           "name" : "id",
@@ -128,7 +127,28 @@
           "200" : {
             "description" : "success",
             "schema" : {
-              "$ref" : "#/definitions/inline_response_200"
+              "type" : "object",
+              "properties" : {
+                "id" : {
+                  "type" : "string",
+                  "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
+                },
+                "name" : {
+                  "type" : "string",
+                  "example" : "Kelly"
+                },
+                "type" : {
+                  "type" : "string",
+                  "enum" : [ "type_a", "type_b", "type_c" ]
+                },
+                "goods" : {
+                  "type" : "array",
+                  "items" : {
+                    "type" : "string",
+                    "example" : "fui"
+                  }
+                }
+              }
             }
           }
         }
@@ -154,7 +174,18 @@
           "200" : {
             "description" : "success",
             "schema" : {
-              "$ref" : "#/definitions/inline_response_200_1"
+              "type" : "object",
+              "xml" : {
+                "name" : "res"
+              },
+              "properties" : {
+                "result" : {
+                  "type" : "boolean"
+                },
+                "msg" : {
+                  "type" : "string"
+                }
+              }
             }
           }
         }
@@ -186,7 +217,20 @@
           "200" : {
             "description" : "success",
             "schema" : {
-              "$ref" : "#/definitions/inline_response_200_2"
+              "type" : "object",
+              "properties" : {
+                "code" : {
+                  "description" : "这是code的描述",
+                  "type" : "integer",
+                  "format" : "int32"
+                },
+                "type" : {
+                  "type" : "string"
+                },
+                "message" : {
+                  "type" : "string"
+                }
+              }
             }
           }
         }
@@ -208,7 +252,7 @@
           "in" : "formData",
           "required" : true,
           "type" : "number",
-          "enum" : [ 0.0, 1.0 ]
+          "enum" : [ 0, 1 ]
         }, {
           "name" : "description",
           "in" : "formData",
@@ -228,9 +272,8 @@
         "summary" : "纯文本 post, 比如含有sql的json数据, base64编码之后",
         "consumes" : [ "text/plain" ],
         "parameters" : [ {
-          "in" : "body",
           "name" : "body",
-          "required" : false,
+          "in" : "body",
           "schema" : {
             "type" : "string",
             "properties" : {
@@ -238,6 +281,7 @@
                 "type" : "string"
               },
               "sql" : {
+                "description" : "这是sql的描述",
                 "type" : "string"
               }
             }
@@ -253,8 +297,9 @@
   },
   "definitions" : {
     "InventoryItem" : {
+      "description" : "这是 InvertoryItem的描述",
       "type" : "object",
-      "required" : [ "id", "manufacturer", "name", "releaseDate" ],
+      "required" : [ "id", "name", "manufacturer", "releaseDate" ],
       "properties" : {
         "id" : {
           "type" : "string",
@@ -263,20 +308,19 @@
         },
         "name" : {
           "type" : "string",
-          "example" : "Widget Adapter",
-          "description" : "名字"
+          "description" : "名字",
+          "example" : "Widget Adapter"
         },
         "releaseDate" : {
           "type" : "string",
+          "description" : "发行日期",
           "format" : "date-time",
-          "example" : "2016-08-29T09:12:33.001Z",
-          "description" : "发行日期"
+          "example" : "2016-08-29T09:12:33.001Z"
         },
         "manufacturer" : {
           "$ref" : "#/definitions/Manufacturer"
         }
-      },
-      "description" : "这是 InvertoryItem的描述"
+      }
     },
     "Manufacturer" : {
       "required" : [ "name" ],
@@ -295,67 +339,9 @@
           "example" : "408-867-5309"
         }
       }
-    },
-    "inline_response_default" : {
-      "type" : "object",
-      "properties" : {
-        "msg" : {
-          "type" : "string"
-        },
-        "result" : {
-          "type" : "boolean"
-        }
-      }
-    },
-    "inline_response_200" : {
-      "type" : "object",
-      "properties" : {
-        "id" : {
-          "type" : "string",
-          "example" : "d290f1ee-6c54-4b01-90e6-d701748f0851"
-        },
-        "name" : {
-          "type" : "string",
-          "example" : "Kelly"
-        },
-        "type" : {
-          "type" : "string",
-          "enum" : [ "type_a", "type_b", "type_c" ]
-        },
-        "goods" : {
-          "type" : "array",
-          "items" : {
-            "type" : "string",
-            "example" : "fui"
-          }
-        }
-      }
-    },
-    "inline_response_200_1" : {
-      "type" : "object",
-      "properties" : {
-        "result" : {
-          "type" : "boolean"
-        },
-        "msg" : {
-          "type" : "string"
-        }
-      }
-    },
-    "inline_response_200_2" : {
-      "type" : "object",
-      "properties" : {
-        "code" : {
-          "type" : "integer",
-          "format" : "int32"
-        },
-        "type" : {
-          "type" : "string"
-        },
-        "message" : {
-          "type" : "string"
-        }
-      }
     }
-  }
+  },
+  "host" : "virtserver.swaggerhub.com",
+  "basePath" : "/mmmy/all-types/1.0.0",
+  "schemes" : [ "https" ]
 }
