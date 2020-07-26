@@ -32,8 +32,12 @@ const DEFAULT_OPTIONS: Options = {
   className: "",
   template: {},
   mustache: Mustache,
-  beautify: true,
-  beautifyOptions: {}
+  beautify: false,
+  beautifyOptions: {
+    indent_size: 2,
+    indent_char: " ",
+    brace_style: "collapse"
+  }
 };
 
 /**

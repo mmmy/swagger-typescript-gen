@@ -5,7 +5,6 @@
 declare namespace {{&moduleName}} {
   {{#definitions}}
   {{#description}}/** {{&description}} */{{/description}}
-  export type {{&name}} = {{#tsType}}{{> type}}{{/tsType}}
-
+  export type {{&name}} = {{#tsType}}{{>type}}{{/tsType}}
   {{/definitions}}
 }

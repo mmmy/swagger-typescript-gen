@@ -16,7 +16,7 @@ var nameSpaceTemp = fs.readFileSync('./templates/d.mustache', 'UTF-8')
 var typeTemp = fs.readFileSync('./templates/type.mustache', 'UTF-8')
 var indexTemp = fs.readFileSync('./templates/index.mustache', 'UTF-8')
 
-swaggerBigdata = fillSwaggerJson(swaggerBigdata)
+swaggerBigdata = repaireSwaggerJson(swaggerBigdata)
 
 const CONFIG = {
   basePath: './src/servicesGen',
@@ -43,6 +43,12 @@ function createDirIfNotExist(filePath) {
 function generateModuleService(moduleConf, basePath = './servicesGen') {
   // create namespace .d.ts
   var tsCode = CodeGen.getTypescriptCode({
+    beautify: true,
+    beautifyOptions: {
+      indent_size: 2,
+      indent_char: ' ',
+      brace_style: 'collapse',
+    },
     swagger: moduleConf.swaggerJson,
     moduleName: moduleConf.moduleName,
     template: {
@@ -89,19 +95,34 @@ const CONFIG_BIGDATA = {
 generateServices(CONFIG_BIGDATA)
 
 /** 处理不合法的数据 */
-function fillSwaggerJson(swaggerData) {
+function repaireSwaggerJson(swaggerData) {
   const dataType = Object.prototype.toString.call(swaggerData)
   if (dataType === '[object Object]') {
+    if (swaggerData.definitions) {
+      Object.getOwnPropertyNames(swaggerData.definitions).forEach(k => {
+        /** 将definitions中的key: xxxx-sss => xxxx_sss */
+        if (k.indexOf('-') > -1) {
+          const definition = swaggerData.definitions[k]
+          const newK = k.replace(/-/g, '_')
+          delete swaggerData.definitions[k]
+          swaggerData.definitions[newK] = definition
+        }
+      })
+    }
     Object.getOwnPropertyNames(swaggerData).forEach(key => {
       const child = swaggerData[key]
-      fillSwaggerJson(child)
+      /** 1. 将definitions中的-换成_ */
+      if (key === '$ref' && typeof swaggerData['$ref'] === 'string') {
+        swaggerData['$ref'] = swaggerData['$ref'].replace(/-/g, '_')
+      }
+      repaireSwaggerJson(child)
     })
-    /** 没有items的array类型codegen会报错, 默认给string数组类型 */
+    /** 2.没有items的array类型codegen会报错, 默认给string数组类型 */
     if (swaggerData.type === 'array' && !swaggerData.items) {
       swaggerData.items = { type: 'string' }
     }
   } else if (dataType === '[object Array]') {
-    swaggerData.forEach(item => fillSwaggerJson(item))
+    swaggerData.forEach(item => repaireSwaggerJson(item))
   }
   return swaggerData
 }

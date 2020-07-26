@@ -1,17 +1,12 @@
 {{#tsType}}
 {{! must use different delimiters to avoid ambiguities when delimiters directly follow a literal brace {. }}
 {{=<% %>=}}<%!
-
 %><%#isRef%><%target%><%/isRef%><%!
-
-%><%#isAtomic%><%&tsType%><%/isAtomic%><%!
-
+%><%#isAtomic%> <%#isAtomic%><%/isAtomic%><%&tsType%><%/isAtomic%><%!
 %><%#isObject%>{
-<%#properties%>
-<%#description%>/** <%description%> */<%/description%>
-  '<%name%>'<%^isRequired%>?<%/isRequired%>:<%>type%><%/properties%> }<%/isObject%><%!
+  <%#properties%>
+    <%#description%>/** <%description%> */<%/description%>
+    '<%name%>'<%^isRequired%>?<%/isRequired%>:<%>type%><%/properties%>  }<%/isObject%><%!
 
-%><%#isArray%>Array<<%#elementType%><%>type%><%/elementType%>><%/isArray%><%!
-
-%><%={{ }}=%>
+    %><%#isArray%> Array<<%#elementType%><%>type%><%/elementType%>><%/isArray%><%!%><%={{ }}=%>
 {{/tsType}}

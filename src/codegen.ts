@@ -15,7 +15,7 @@ export const CodeGen = {
     const viewData = Swagger2Gen.getViewData(options);
     console.log("----viewData----");
     console.log(JSON.stringify(viewData, null, 2));
-    return Swagger2Gen.getCode(options);
+    // return Swagger2Gen.getCode(options);
     // 去掉beautiful
     return enhanceCode(Swagger2Gen.getCode(options), options);
   },
@@ -23,9 +23,9 @@ export const CodeGen = {
     validateOptions(opts);
 
     const options = makeOptions(opts);
-    return Swagger2Gen.getCode(options);
+    // return Swagger2Gen.getCode(options);
     // 去掉beautiful
-    // return enhanceCode(Swagger2Gen.getCode(options), options);
+    return enhanceCode(Swagger2Gen.getCode(options), options);
   },
   getDataAndOptionsForGeneration: function(opts: ProvidedCodeGenOptions) {
     const options = makeOptions(opts);
