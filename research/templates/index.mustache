@@ -6,6 +6,24 @@ import request from '@/utils/request'
 
 {{#methods}}
 /** {{summary}} */
+{{#isGET}}
+export async function {{methodName}}(
+{{#parameters.0.tsType}}
+{{^parameters.0.isBodyParameter}}
+    params: {
+        {{#parameters}}
+            /** {{tsType.description}} */
+            '{{name}}'{{^required}}?{{/required}}:{{tsType.tsType}};
+        {{/parameters}}
+    }
+{{/parameters.0.isBodyParameter}}
+{{/parameters.0.tsType}}
+)
+: Promise<{{#successfulResponseType}}{{moduleName}}.{{successfulResponseType}}{{/successfulResponseType}}{{^successfulResponseType}}any{{/successfulResponseType}}>
+{
+return request.{{methodLowerCase}}('{{path}}'{{#parameters.0.tsType}}{{^parameters.0.isBodyParameter}}, { params }{{/parameters.0.isBodyParameter}}{{/parameters.0.tsType}})
+}
+{{/isGET}}
 {{^isGET}}
 export async function {{methodName}}(data: {{#parameters.0.tsType.target}}{{moduleName}}.{{parameters.0.tsType.target}}{{/parameters.0.tsType.target}}{{^parameters.0.tsType.target}}undefined{{/parameters.0.tsType.target}})
 : Promise<{{#successfulResponseType}}{{moduleName}}.{{successfulResponseType}}{{/successfulResponseType}}{{^successfulResponseType}}any{{/successfulResponseType}}>

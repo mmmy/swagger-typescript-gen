@@ -12,17 +12,19 @@ var file = "./apis/swagger.json"
 
 var swagger = JSON.parse(fs.readFileSync(file, 'UTF-8'));
 var swaggerBigdata = JSON.parse(fs.readFileSync('./apis/bigdata.json', 'UTF-8'));
+var swaggerDMP = JSON.parse(fs.readFileSync('./apis/dmp.json', 'UTF-8'));
 var nameSpaceTemp = fs.readFileSync('./templates/d.mustache', 'UTF-8')
 var typeTemp = fs.readFileSync('./templates/type.mustache', 'UTF-8')
 var indexTemp = fs.readFileSync('./templates/index.mustache', 'UTF-8')
 
 swaggerBigdata = repaireSwaggerJson(swaggerBigdata)
+swaggerDMP = repaireSwaggerJson(swaggerDMP)
 
 const CONFIG = {
   basePath: './src/servicesGen',
   modules: [
     {
-      moduleName: 'IDataWork',
+      moduleName: 'ISwaggerTest',
       swaggerJson: swagger,
       template: {
         nameSpace: nameSpaceTemp,
@@ -32,6 +34,23 @@ const CONFIG = {
     }
   ]
 }
+
+const CONFIG_DMP = {
+  basePath: './src/DMPGen',
+  modules: [
+    {
+      moduleName: 'IDMP',
+      swaggerJson: swaggerDMP,
+      template: {
+        nameSpace: nameSpaceTemp,
+        type: typeTemp,
+        index: indexTemp,
+      }
+    }
+  ]
+}
+
+generateServices(CONFIG_DMP)
 
 function createDirIfNotExist(filePath) {
   const dir = path.parse(filePath).dir
@@ -61,6 +80,13 @@ function generateModuleService(moduleConf, basePath = './servicesGen') {
   fs.writeFileSync(dPath, tsCode)
 
   var indexCode = CodeGen.getTypescriptCode({
+    beautify: true,
+    beautifyOptions: {
+      indent_size: 2,
+      indent_char: ' ',
+      brace_style: 'collapse',
+      wrap_line_length: 100,
+    },
     swagger: moduleConf.swaggerJson,
     moduleName: moduleConf.moduleName,
     template: {
@@ -76,7 +102,7 @@ function generateServices(config) {
   config.modules.forEach(m => generateModuleService(m, config.basePath))
 }
 
-// generateServices(CONFIG)
+generateServices(CONFIG)
 
 const CONFIG_BIGDATA = {
   basePath: './src/bigdataServicesGen',

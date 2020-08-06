@@ -11,5 +11,6 @@ lib/
 coverage/
 yarn-error.log
 bigdata.json
-debug.json
+dmp.json
+debug*.json
 research/src/*
