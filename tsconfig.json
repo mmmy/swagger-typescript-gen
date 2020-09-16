@@ -16,5 +16,5 @@
         "rootDir": "./src",
         "outDir": "lib"
     },
-    "include": ["src/**/*.ts", "research/**/*.ts"]
+    "include": ["src/**/*.ts"]
 }

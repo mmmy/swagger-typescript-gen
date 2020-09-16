@@ -12,9 +12,9 @@ export const CodeGen = {
   transformToCodeWithMustache,
   getTypescriptCode: function(opts: ProvidedCodeGenOptions) {
     const options = makeOptions(opts);
-    const viewData = Swagger2Gen.getViewData(options);
-    console.log("----viewData----");
-    console.log(JSON.stringify(viewData, null, 2));
+    // const viewData = Swagger2Gen.getViewData(options);
+    // console.log("----viewData----");
+    // console.log(JSON.stringify(viewData, null, 2));
     // return Swagger2Gen.getCode(options);
     // 去掉beautiful
     return enhanceCode(Swagger2Gen.getCode(options), options);

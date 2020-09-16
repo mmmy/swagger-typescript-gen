@@ -18,6 +18,7 @@ interface Options {
   readonly mustache: typeof Mustache;
   readonly beautify: ((source: string) => string) | boolean;
   readonly beautifyOptions: JsBeautifyOptions;
+  readonly debug?: boolean;
 }
 
 interface SwaggerOption {

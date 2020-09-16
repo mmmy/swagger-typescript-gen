@@ -68,6 +68,7 @@ function generateModuleService(moduleConf, basePath = './servicesGen') {
       indent_char: ' ',
       brace_style: 'collapse',
     },
+    debug: true,
     swagger: moduleConf.swaggerJson,
     moduleName: moduleConf.moduleName,
     template: {

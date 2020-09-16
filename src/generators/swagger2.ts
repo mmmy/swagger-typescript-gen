@@ -17,6 +17,9 @@ export const Swagger2Gen: CodeGenerator = {
   },
   getCode: opts => {
     const data = Swagger2Gen.getViewData(opts);
+    if (opts.debug) {
+      console.log(JSON.stringify(data, null, 2));
+    }
     return transformToCodeWithMustache(data, opts.template, opts.mustache);
   }
 };
