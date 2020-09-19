@@ -87,6 +87,7 @@ export interface SecurityDefinition {
 }
 
 export interface HttpOperation {
+  readonly tags?: string[];
   readonly deprecated: boolean;
   readonly security: boolean;
   readonly responses: {
@@ -144,7 +145,7 @@ export interface Swagger {
   };
   readonly paths: PathsObject;
   readonly definitions: {
-    readonly [index: string]: SwaggerType;
+    [index: string]: SwaggerType;
   };
   readonly parameters: {
     readonly [index: string]: Parameter;

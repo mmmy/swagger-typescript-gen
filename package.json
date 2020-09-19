@@ -37,15 +37,15 @@
     "commander": "^2.19.0",
     "js-beautify": "^1.8.9",
     "jshint": "^2.9.7",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.20",
     "mustache": "^3.0.1",
     "update-notifier": "^2.5.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.161",
     "@types/commander": "^2.12.2",
     "@types/jest": "^23.3.10",
     "@types/js-beautify": "^1.8.0",
-    "@types/lodash": "^4.14.119",
     "@types/mustache": "^0.8.32",
     "@types/node": "^10.12.18",
     "final-fs": "^1.6.0",

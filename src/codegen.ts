@@ -5,7 +5,8 @@ import {
 } from "./options/options";
 import { transformToCodeWithMustache } from "./transform/transformToCodeWithMustache";
 import { Swagger2Gen } from "./generators/swagger2";
-import { enhanceCode } from "./enhance";
+import { enhanceCode, repairSwaggerJson } from "./enhance";
+import { splitSwaggerByTags } from "./getViewForSwagger2";
 
 export const CodeGen = {
   transformToViewData: Swagger2Gen.getViewData,
@@ -31,5 +32,11 @@ export const CodeGen = {
     const options = makeOptions(opts);
     const data = Swagger2Gen.getViewData(options);
     return { data, options };
+  },
+  generateServiceCode: function(options: ProvidedCodeGenOptions) {
+    repairSwaggerJson(options.swagger);
+    // 1.解析tags
+    splitSwaggerByTags(options.swagger);
+    // console.log(swaggerMap)
   }
 };

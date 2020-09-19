@@ -71,7 +71,9 @@ export function validateOptions(options: ProvidedCodeGenOptions): void {
   if (
     !options.template ||
     !isObject(options.template) ||
+    // @ts-ignore
     !isString(options.template.class) ||
+    // @ts-ignore
     !isString(options.template.method)
   ) {
     throw new Error(

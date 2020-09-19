@@ -1,6 +1,6 @@
-import { merge, get } from "lodash";
+import { merge, get, cloneDeep, set } from "lodash";
 import { CodeGenOptions } from "./options/options";
-import { Swagger } from "./swagger/Swagger";
+import { Swagger, schemaAllowedHttpMethods } from "./swagger/Swagger";
 import {
   makeMethod,
   makeMethodName,
@@ -211,3 +211,101 @@ const makeMethodsFromPaths = (
 
       return method;
     });
+
+type Mutable<T> = { -readonly [key in keyof T]: T[key] };
+
+type SwaggerVar = Mutable<Swagger>;
+
+/**
+ * 根据tag 将swagger的paths和definitions分离成多个swagger
+ * @param swagger
+ */
+export function splitSwaggerByTags(swagger: Swagger) {
+  const defaultTag = "defaultTag";
+  const swaggerMap: { [key: string]: SwaggerVar } = {};
+  const pathKeys = Object.getOwnPropertyNames(swagger.paths);
+  const definitions = Object.assign({}, swagger.definitions);
+
+  pathKeys.forEach(p => {
+    const pathData = swagger.paths[p];
+    // const methods: HttpMethod[] = ['get', '']// Object.getOwnPropertyNames(pathData)
+
+    schemaAllowedHttpMethods.forEach(m => {
+      const operationData = pathData[m];
+      if (operationData) {
+        let tag0 = (operationData.tags && operationData.tags[0]) || defaultTag;
+        tag0 = tag0.trim();
+        // 初始化
+        if (!swaggerMap[tag0]) {
+          const tagSwagger: SwaggerVar = cloneDeep(swagger);
+          tagSwagger.definitions = {};
+          tagSwagger.paths = {};
+          swaggerMap[tag0] = tagSwagger;
+        }
+
+        const tagSwagger = swaggerMap[tag0];
+        set(tagSwagger.paths, `${p}.${m}`, operationData);
+        // 查找必要的definitions
+        const relateDefinitionsInOperation = findAllRefDefinitions(
+          operationData
+        );
+        // if (relateDefinitionsInOperation.length > 0) {
+        //   console.log(tag0, p,m,relateDefinitionsInOperation)
+        // }
+
+        relateDefinitionsInOperation.forEach(dk => {
+          const definitionData = definitions[dk];
+          if (definitionData && !tagSwagger.definitions[dk]) {
+            tagSwagger.definitions[dk] = definitionData;
+            // findAllRelativeDefinitions in definitionData
+            /*
+                目前只查找一级
+                tod: 递归查找出所有definition
+             */
+            const definitionsInDefinition = findAllRefDefinitions(
+              definitionData
+            );
+            // if (definitionsInDefinition.length > 0) {
+            //   console.log('    ',definitionsInDefinition)
+            // }
+            definitionsInDefinition.forEach(did => {
+              const defData = definitions[did];
+              if (defData && !tagSwagger.definitions[did]) {
+                tagSwagger.definitions[did] = defData;
+              }
+            });
+          }
+        });
+      }
+    });
+  });
+  return swaggerMap;
+}
+// 查找所有的ref
+function findAllRef(obj: any, result: string[]) {
+  const dataType = Object.prototype.toString.call(obj);
+  if (dataType === "[object Object]") {
+    const keys = Object.getOwnPropertyNames(obj);
+    keys.forEach(key => {
+      const val = obj[key];
+      if (key === "$ref" && typeof val === "string") {
+        result.push(val);
+      } else {
+        findAllRef(obj[key], result);
+      }
+    });
+  } else if (dataType === "[object Array]") {
+    obj.forEach((o: any) => findAllRef(o, result));
+  }
+}
+// 查找所有的ref中相关的definition
+function findAllRefDefinitions(obj: any) {
+  const result: string[] = [];
+  findAllRef(obj, result);
+  return result
+    .map(ref => {
+      const pathNames = ref.split("/");
+      return pathNames[pathNames.length - 1];
+    })
+    .filter(s => !!s);
+}
