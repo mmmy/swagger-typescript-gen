@@ -1,6 +1,8 @@
-# Swagger to Typescript Codegen
+# Swagger to Typescript gen (Swagger to Typescript 代码生成工具)
 
-[![Build Status](https://travis-ci.com/mtennoe/swagger-typescript-codegen.svg?branch=master)](https://travis-ci.com/mtennoe/swagger-typescript-codegen)
+首先感谢 [swagger-typescript-codegen](https://github.com/mtennoe/swagger-typescript-codegen)
+
+[![Build Status](https://travis-ci.com/mmmy/swagger-typescript-gen.svg?branch=master)](https://travis-ci.com/mmmy/swagger-typescript-gen)
 
 This package generates a TypeScript class from a [swagger specification file](https://github.com/wordnik/swagger-spec). The code is generated using [mustache templates](https://github.com/mtennoe/swagger-js-codegen/tree/master/templates) and is quality checked by [jshint](https://github.com/jshint/jshint/) and beautified by [js-beautify](https://github.com/beautify-web/js-beautify).
 
@@ -8,73 +10,50 @@ The typescript generator is based on [superagent](https://github.com/visionmedia
 
 This fork was made to simplify some parts, add some more features, and tailor it more to specific use cases.
 
+## 原理
+
+将 swagger 根据 paths 中的 tag 进行分割成子 swagger, 再利用模板引擎 mustache 生成 typescript 代码, 并写入文件
+
 ## Installation
 
 ```bash
-npm install swagger-typescript-codegen
+npm install swagger-typescript-gen
 ```
 
 ## Example
 
 ```javascript
 var fs = require("fs");
-var CodeGen = require("swagger-typescript-codegen").CodeGen;
+var CodeGen = require("swagger-typescript-gen").CodeGen;
 
 var file = "swagger/spec.json";
+// .d.ts文件的模板
+var nameSpaceTemp = fs.readFileSync("./templates/d.mustache", "UTF-8");
+// typescript类型模板
+var typeTemp = fs.readFileSync("./templates/type.mustache", "UTF-8");
+// index.ts模板
+var indexTemp = fs.readFileSync("./templates/index.mustache", "UTF-8");
+// swagger json
 var swagger = JSON.parse(fs.readFileSync(file, "UTF-8"));
-var tsSourceCode = CodeGen.getTypescriptCode({
-  className: "Test",
+// 生成目标文件
+CodeGen.generateServiceCode({
+  // 目标文件的目录
+  outputPath: "./src/service",
   swagger: swagger,
-  imports: ["../../typings/tsd.d.ts"]
-});
-console.log(tsSourceCode);
-```
-
-## Custom template
-
-```javascript
-var source = CodeGen.getCustomCode({
-  moduleName: "Test",
-  className: "Test",
-  swagger: swaggerSpec,
-  template: {
-    class: fs.readFileSync("my-class.mustache", "utf-8"),
-    method: fs.readFileSync("my-method.mustache", "utf-8"),
-    type: fs.readFileSync("my-type.mustache", "utf-8")
+  typeTemplate: typeTemp,
+  nameSpaceTemplate: nameSpaceTemp,
+  indexTemplate: indexTemp,
+  // 启用debug之后, 将在控制台打印调试信息
+  debug: false,
+  // 默认开启自动格式化
+  beautify: true,
+  // 参考: https://github.com/beautify-web/js-beautify#options
+  beautifyOptions: {
+    indent_size: 2,
+    indent_char: " ",
+    brace_style: "collapse"
   }
 });
-```
-
-## Options
-
-In addition to the common options listed below, `getCustomCode()` _requires_ a `template` field:
-
-    template: { class: "...", method: "..." }
-
-`getTypescriptCode()`, `getCustomCode()` each support the following options:
-
-```yaml
-moduleName:
-  type: string
-  description: Your module name
-className:
-  type: string
-beautify:
-  type: boolean
-  description: whether or not to beautify the generated code
-beautifyOptions:
-  type: object
-  description: Options to be passed to the beautify command. See js-beautify for all available options.
-mustache:
-  type: object
-  description: See the 'Custom Mustache Variables' section below
-imports:
-  type: array
-  description: Typescript definition files to be imported.
-swagger:
-  type: object
-  required: true
-  description: swagger object
 ```
 
 ### Template Variables
@@ -200,7 +179,7 @@ methods:
 You can also pass in your own variables for the mustache templates by adding a `mustache` object:
 
 ```javascript
-var source = CodeGen.getCustomCode({
+ CodeGen.generateServiceCode({
     ...
     mustache: {
       foo: 'bar',
@@ -208,33 +187,6 @@ var source = CodeGen.getCustomCode({
       app_version: pkg.version
     }
 });
-```
-
-## Swagger Extensions
-
-### x-proxy-header
-
-Some proxies and application servers inject HTTP headers into the requests. Server-side code
-may use these fields, but they are not required in the client API.
-
-eg: https://cloud.google.com/appengine/docs/go/requests#Go_Request_headers
-
-```yaml
-  /locations:
-    get:
-      parameters:
-      - name: X-AppEngine-Country
-        in: header
-        x-proxy-header: true
-        type: string
-        description: Provided by AppEngine eg - US, AU, GB
-      - name: country
-        in: query
-        type: string
-        description: |
-          2 character country code.
-          If not specified, will default to the country provided in the X-AppEngine-Country header
-      ...
 ```
 
 ## Development

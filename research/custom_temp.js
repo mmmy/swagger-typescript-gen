@@ -55,7 +55,7 @@ generateServices(CONFIG_DMP)
 function createDirIfNotExist(filePath) {
   const dir = path.parse(filePath).dir
   if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir)
+    fs.mkdirSync(dir, {recursive: true})
   }
 }
 

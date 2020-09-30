@@ -7,6 +7,20 @@ import { transformToCodeWithMustache } from "./transform/transformToCodeWithMust
 import { Swagger2Gen } from "./generators/swagger2";
 import { enhanceCode, repairSwaggerJson } from "./enhance";
 import { splitSwaggerByTags } from "./getViewForSwagger2";
+import { generateModuleService } from "./service";
+
+interface ModuleConfig {
+  basePath: string;
+  modules: {
+    moduleName: string;
+    swaggerJson: ProvidedCodeGenOptions["swagger"];
+    template: {
+      nameSpace: string;
+      type: string;
+      index: string;
+    };
+  }[];
+}
 
 export const CodeGen = {
   transformToViewData: Swagger2Gen.getViewData,
@@ -33,10 +47,34 @@ export const CodeGen = {
     const data = Swagger2Gen.getViewData(options);
     return { data, options };
   },
-  generateServiceCode: function(options: ProvidedCodeGenOptions) {
+  generateServiceCode: function(
+    options: ProvidedCodeGenOptions & {
+      outputPath?: string;
+      nameSpaceTemplate: string;
+      typeTemplate: string;
+      indexTemplate: string;
+    }
+  ) {
     repairSwaggerJson(options.swagger);
     // 1.解析tags
-    splitSwaggerByTags(options.swagger);
-    // console.log(swaggerMap)
+    const swaggerTagMap = splitSwaggerByTags(options.swagger);
+    const tagList = Object.getOwnPropertyNames(swaggerTagMap);
+    // console.log(swaggerTagMap)
+    const moduleConfig: ModuleConfig = {
+      basePath: options.outputPath || "./__codeGenService",
+      modules: tagList.map(tag => ({
+        moduleName: tag,
+        swaggerJson: swaggerTagMap[tag],
+        template: {
+          nameSpace: options.nameSpaceTemplate,
+          type: options.typeTemplate,
+          index: options.indexTemplate
+        }
+      }))
+    };
+
+    moduleConfig.modules.forEach(m =>
+      generateModuleService(m, moduleConfig.basePath, options)
+    );
   }
 };
