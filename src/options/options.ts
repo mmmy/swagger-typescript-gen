@@ -1,6 +1,7 @@
 import * as Mustache from "mustache";
 import { isObject, isString } from "lodash";
 import { Swagger } from "../swagger/Swagger";
+import { JsBeautifyOptions } from "../enhance/beautify";
 
 export interface Template {
   readonly class: string;

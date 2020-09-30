@@ -11,12 +11,7 @@ export interface JsBeautifyOptions {
   max_preserve_newlines?: number;
   jslint_happy?: boolean;
   space_after_anon_function?: boolean;
-  brace_style?:
-    | "collapse-preserve-inline"
-    | "collapse"
-    | "expand"
-    | "end-expand"
-    | "none";
+  brace_style?: "collapse" | "expand" | "end-expand" | "none";
   keep_array_indentation?: boolean;
   keep_function_indentation?: boolean;
   space_before_conditional?: boolean;
