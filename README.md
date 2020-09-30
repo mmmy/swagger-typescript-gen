@@ -56,6 +56,10 @@ CodeGen.generateServiceCode({
 });
 ```
 
+### 模板参考
+
+请查看 research/templates 目录
+
 ### Template Variables
 
 The following data are passed to the [mustache templates](https://github.com/janl/mustache.js):
